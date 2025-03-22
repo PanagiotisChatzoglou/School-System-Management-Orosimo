@@ -3,18 +3,12 @@
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { useRouter } from "next/navigation";
 
-const Pagination = ({
-  page,
-  teacherCount,
-}: {
-  page: number;
-  teacherCount: number;
-}) => {
+const Pagination = ({ page, count }: { page: number; count: number }) => {
   const router = useRouter();
 
   //Allow to navigate to the previous and next page
   const hasPrev = ITEM_PER_PAGE * (page - 1) > 0;
-  const hasNext = ITEM_PER_PAGE * (page - 1) + ITEM_PER_PAGE < teacherCount;
+  const hasNext = ITEM_PER_PAGE * (page - 1) + ITEM_PER_PAGE < count;
 
   // Change only the page number in the URL
   // and keep the rest of the query string !
@@ -34,23 +28,20 @@ const Pagination = ({
         Prev
       </button>
       <div className="flex items-center gap-2 text-sm">
-        {Array.from(
-          { length: Math.ceil(teacherCount / ITEM_PER_PAGE) },
-          (_, i) => {
-            const pageIndex = i + 1;
-            return (
-              <button
-                onClick={() => changePage(pageIndex)}
-                key={pageIndex}
-                className={`px-2 rounded-sm ${
-                  page === pageIndex ? "bg-lamaSky" : ""
-                } `}
-              >
-                {pageIndex}
-              </button>
-            );
-          }
-        )}
+        {Array.from({ length: Math.ceil(count / ITEM_PER_PAGE) }, (_, i) => {
+          const pageIndex = i + 1;
+          return (
+            <button
+              onClick={() => changePage(pageIndex)}
+              key={pageIndex}
+              className={`px-2 rounded-sm ${
+                page === pageIndex ? "bg-lamaSky" : ""
+              } `}
+            >
+              {pageIndex}
+            </button>
+          );
+        })}
       </div>
       <button
         onClick={() => changePage(page + 1)}

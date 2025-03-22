@@ -102,6 +102,7 @@ const TeacherListPage = async ({
   const p = page ? parseInt(page) : 1;
 
   //URL PARAMS CONDITION
+  //protect params and private data
   const query: Prisma.TeacherWhereInput = {};
 
   if (queryParams) {
@@ -114,12 +115,15 @@ const TeacherListPage = async ({
                 classId: parseInt(value),
               },
             };
+            break;
+          case "search":
+            query.name = { contains: value, mode: "insensitive" };
         }
       }
     }
   }
 
-  const [data, teacherCount] = await prisma.$transaction([
+  const [data, count] = await prisma.$transaction([
     prisma.teacher.findMany({
       where: query,
       include: {
@@ -160,7 +164,7 @@ const TeacherListPage = async ({
       {/* LIST */}
       <Table columns={columns} renderRow={renderRow} data={data} />
       {/* PAGINATION */}
-      <Pagination page={p} teacherCount={teacherCount} />
+      <Pagination page={p} count={count} />
     </div>
   );
 };
